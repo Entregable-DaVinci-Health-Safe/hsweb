@@ -1,0 +1,38 @@
+Primero, asegúrate de tener Jest y React Testing Library instalados en tu proyecto:
+npm install --save-dev babel-jest @babel/preset-env @babel/preset-react
+
+Crea un archivo .babelrc en la raíz de tu proyecto (si no tienes uno) y añade la configuración para los presets de Babel:
+json
+
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+
+Ignora los módulos no transformados "package.json": Los módulos que no deben transformarse (como node_modules) deben estar excluidos. Esto normalmente ya está configurado, pero en algunos casos, puede ser necesario agregar una exclusión explícita. Asegúrate de que en tu configuración de Jest, transformIgnorePatterns ignore adecuadamente node_modules:
+
+ "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!axios)" 
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.25.7",
+    "@babel/preset-react": "^7.25.7",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "babel-jest": "^29.7.0",
+    "jest": "^27.5.1"
+  } 
+
+Nomenclatura:
+/components
+/__tests__
+          -> NOMBRE_VIEW_VALIDAR.test.jsx
+
+Resumen de comandos:
+Ejecutar todas las pruebas: npm test
+Ejecutar pruebas en un archivo específico: npm test -- [nombre del archivo]
+Ejecutar pruebas con reporte de cobertura: npm test -- --coverage

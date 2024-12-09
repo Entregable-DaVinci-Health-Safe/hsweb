@@ -1,0 +1,9 @@
+.container #ContenedorForm{
+    margin: 5vh auto;
+}
+
+.container h3{
+    padding: 1vh;
+    color: #797979;
+    text-align: left;
+}

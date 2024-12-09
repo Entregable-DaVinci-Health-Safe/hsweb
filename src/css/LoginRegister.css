@@ -1,0 +1,64 @@
+
+
+    #BotonAtras{
+        width: 10%;
+        margin: 3%;
+        float: left!important;
+    }
+
+    #info-registro{
+        width: 30vh; 
+        vertical-align: bottom;
+        bottom: 0px;
+        margin: 5vh;
+        position: absolute;
+        text-align: left;
+    }
+
+    #Columna-Inputs{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #Input {
+    margin: 2%;
+    width:  70%;
+    }
+
+    #Posicionar-Container{
+        padding-top: 50%;
+    }
+
+    #Posicionar-Container-Register{
+        padding-top: 35%;
+    }
+
+    #Posicionar-Carta {
+        float: right!important;
+    }
+    
+
+    #Carta{
+        min-height: 100vh; 
+        width: 55vh;
+    }
+    #logo {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    #Boton{
+     margin: 3%;
+     padding-left: 8%;
+     padding-right: 8%;
+    }
+
+    #FondoLogin {
+        background-image: url(../img/Background/FondoLogin.jpg);
+        height: 100vh;
+        width: 100%;
+        text-align: center;
+        position: relative;
+    }
