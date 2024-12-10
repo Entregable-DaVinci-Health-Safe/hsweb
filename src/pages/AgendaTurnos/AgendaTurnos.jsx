@@ -1,5 +1,5 @@
 import AxiosHealth from "../../interceptor/axiosHealth";
-import axios from 'axios';
+import axios from "axios";
 import { Container, Row, Col, Form, Table, Card } from "react-bootstrap";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,11 +11,17 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
-import { Tooltip} from "@mui/material";
-import React, { useState, useLayoutEffect, useReducer, useRef } from "react";
+import { Tooltip } from "@mui/material";
+import React, {
+  useState,
+  useLayoutEffect,
+  useReducer,
+  useEffect,
+  useRef,
+} from "react";
 import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import TextFieldDatetimeTurnoComponent from "../../components/TextFieldDatetimeTurnoComponent";
 import TextFieldDropdownComponente from "../../components/TextFieldDropdownComponent";
@@ -33,10 +39,7 @@ import checkOrCreateCalendar from "../../components/ManejoGoogleCalendarID";
 import PersonIcon from "@mui/icons-material/Person";
 import ArticleIcon from "@mui/icons-material/Article";
 import { Pagination } from "react-bootstrap";
-import {
-  GoogleOAuthProvider,
-  useGoogleLogin,
-} from "@react-oauth/google";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 import {
   Accordion,
@@ -46,7 +49,7 @@ import {
 } from "@mui/material";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { IconButton } from "@mui/material";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 
@@ -73,7 +76,10 @@ function AgendaTurnos() {
   const [hora, setHora] = useState({ campo: "", valido: null });
   const [motivoVisita, setMotivoVisita] = useState({ campo: "", valido: null });
   const [fecha, setFecha] = useState({ campo: "", valido: null });
-  const [recordatorio, setRecordatorio] = useState({campo: false,valido: null,});
+  const [recordatorio, setRecordatorio] = useState({
+    campo: false,
+    valido: null,
+  });
   const [mostrarForm, setMostrarForm] = useState(true);
   const [loginTrue, setLoginTrue] = useState(false);
   const [openEditarTurno, setOpenEditarTurno] = useState(false);
@@ -101,7 +107,9 @@ function AgendaTurnos() {
         const profesionalesArray = Object.values(value[0].data);
         setProfesionalSelect(profesionalesArray);
       })
-      .catch((error) =>{console.log(error)});
+      .catch((error) => {
+        console.log(error);
+      });
   }, [reducerValue]);
 
   useLayoutEffect(() => {
@@ -114,7 +122,9 @@ function AgendaTurnos() {
           const especialidadesArray = Object.values(value[0].data);
           setEspecialidadSelect(especialidadesArray);
         })
-        .catch((error)=>{console.log(error)});
+        .catch((error) => {
+          console.log(error);
+        });
       traeCentrosPorProfesional();
     }
   }, [profesional.campo]);
@@ -175,7 +185,7 @@ function AgendaTurnos() {
           localStorage.setItem("accessCAL", accessCAL);
           calendarId = await handleCalendar(accessCAL);
         }
-        return calendarId; 
+        return calendarId;
       } else {
         setLoginTrue(true);
         throw new Error("Token inválido. Se requiere inicio de sesión.");
@@ -185,8 +195,6 @@ function AgendaTurnos() {
       throw error;
     }
   }
-
- 
 
   const AutoLogin = () => {
     const login = useGoogleLogin({
@@ -201,10 +209,10 @@ function AgendaTurnos() {
         "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email",
     });
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       const shouldLogin =
         loginTrue &&
-        (recordatorio.campo || reloadinGoogle) &&
+        // (recordatorio.campo || reloadinGoogle) &&
         localStorage.getItem("accessCAL") == null;
       if (shouldLogin) {
         login();
@@ -218,47 +226,42 @@ function AgendaTurnos() {
     }
   }, [recordatorio]);
 
-  const createEvent = async (accessToken, eventData, calendarId,idEvento) => {
-    
+  const createEvent = async (accessToken, eventData, calendarId, idEvento) => {
     const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`;
-  
+
     try {
-      const response = await axios.post(
-        url,
-        eventData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      idEvento(response.data.id)
+      const response = await axios.post(url, eventData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      idEvento(response.data.id);
     } catch (error) {
-      console.error('Error creando evento:', error);
+      console.error("Error creando evento:", error);
     }
   };
-  
+
   // Validador de token de google
   // const verifyAccessToken = async (accessToken) => {
   //   const url = 'https://www.googleapis.com/calendar/v3/users/me/calendarList';
-  
+
   //   try {
   //     const response = await axios.get(url, {
   //       headers: {
   //         Authorization: `Bearer ${accessToken}`,
   //       },
   //     });
-  
+
   //     console.log('Respuesta de la API:', response.data);
   //   } catch (error) {
   //     console.error('Error verificando el token:', error.response?.data || error.message);
   //   }
   // };
 
-  const deleteEvent = async (accessToken, eventId,calendarId) => {
-   const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}`;
-  
+  const deleteEvent = async (accessToken, eventId, calendarId) => {
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}`;
+
     try {
       await axios.delete(url, {
         headers: {
@@ -266,11 +269,10 @@ function AgendaTurnos() {
         },
       });
     } catch (error) {
-      console.error('Error eliminando evento:', error);
+      console.error("Error eliminando evento:", error);
     }
   };
-  
-  
+
   async function registrarTurno() {
     validarObligatorio(motivoVisita, setMotivoVisita);
     validarObligatorio(fecha, setFecha);
@@ -290,24 +292,39 @@ function AgendaTurnos() {
       let idGoogle = null;
       if (recordatorio.campo) {
         try {
-          const startDateTime = dayjs(`${fecha.campo}T${hora.campo}`).format('YYYY-MM-DDTHH:mm:ssZ');
-          const endDateTime = dayjs(`${fecha.campo}T${hora.campo}`).add(1, 'hour').format('YYYY-MM-DDTHH:mm:ssZ');
-         
-          const eventData={
-            "summary": 'Turno Medico: '+motivoVisita.campo,
-            "location": institucion.campo.direccion.direccion,
-            "description": 'Motivo del turno: ' +motivoVisita.campo+ ' - Profesional: '+profesional.campo.nombre+ ' - Institucion: '+institucion.campo.nombre,
-            "start": {
-              "dateTime": startDateTime,
-              "timeZone": "America/Argentina/Buenos_Aires"
+          const startDateTime = dayjs(`${fecha.campo}T${hora.campo}`).format(
+            "YYYY-MM-DDTHH:mm:ssZ"
+          );
+          const endDateTime = dayjs(`${fecha.campo}T${hora.campo}`)
+            .add(1, "hour")
+            .format("YYYY-MM-DDTHH:mm:ssZ");
+
+          const eventData = {
+            summary: "Turno Medico: " + motivoVisita.campo,
+            location: institucion.campo.direccion.direccion,
+            description:
+              "Motivo del turno: " +
+              motivoVisita.campo +
+              " - Profesional: " +
+              profesional.campo.nombre +
+              " - Institucion: " +
+              institucion.campo.nombre,
+            start: {
+              dateTime: startDateTime,
+              timeZone: "America/Argentina/Buenos_Aires",
             },
-            "end": {
-              "dateTime": endDateTime,
-              "timeZone": "America/Argentina/Buenos_Aires"
-            }
-          }
+            end: {
+              dateTime: endDateTime,
+              timeZone: "America/Argentina/Buenos_Aires",
+            },
+          };
           idGoogle = await new Promise((idEvento) => {
-            createEvent(localStorage.getItem("accessCAL"),eventData,idGoogleCal,idEvento)
+            createEvent(
+              localStorage.getItem("accessCAL"),
+              eventData,
+              idGoogleCal,
+              idEvento
+            );
           });
         } catch (error) {
           return;
@@ -352,7 +369,9 @@ function AgendaTurnos() {
         setMostrarForm(false);
         forceUpdate();
       });
-    }else{setOpenConfirmSave(false)}
+    } else {
+      setOpenConfirmSave(false);
+    }
   }
 
   useLayoutEffect(() => {
@@ -445,9 +464,9 @@ function AgendaTurnos() {
     setIsDialogOpenUserExist((prevState) => !prevState);
   };
   const handleConfirmActionUserExist = async () => {
-    setReloginGoogle(true)
-    await validateGoogleTokenOnFrontend(localStorage.getItem('token'))
-    deleteEvent(localStorage.getItem("accessCAL"),googleDel,idGoogleCal)
+    setReloginGoogle(true);
+    await validateGoogleTokenOnFrontend(localStorage.getItem("token"));
+    deleteEvent(localStorage.getItem("accessCAL"), googleDel, idGoogleCal);
     AxiosHealth.put(`/turnos/${turnoDel}/desactivar`).then(() => {
       setMostrarForm(false);
       forceUpdate();
@@ -462,10 +481,10 @@ function AgendaTurnos() {
     setOpenEditarTurno(true);
   };
 
-  const confirmSave = () =>{
-    setOpenConfirmSave(false)
-  }
-  
+  const confirmSave = () => {
+    setOpenConfirmSave(false);
+  };
+
   const getFirstWord = (str) => {
     if (typeof str === "string" && str.includes("?")) {
       const result = {};
@@ -573,9 +592,7 @@ function AgendaTurnos() {
                                     <IconButton
                                       aria-label="Reactivar"
                                       color="primary"
-                                      onClick={() =>
-                                        reactivarTurno(option)
-                                      }
+                                      onClick={() => reactivarTurno(option)}
                                     >
                                       <RotateLeftIcon />
                                     </IconButton>
@@ -584,7 +601,7 @@ function AgendaTurnos() {
                               </Card.Header>
                             )}
                           </Col>
-                         </Row>
+                        </Row>
                         {!option.activo ? <Card.Text>{} </Card.Text> : null}
                         <Card.Text>
                           Fecha del turno:{" "}
@@ -819,7 +836,7 @@ function AgendaTurnos() {
                     />
                     <Button
                       variant="contained"
-                      onClick={()=>setOpenConfirmSave(true)}
+                      onClick={() => setOpenConfirmSave(true)}
                       className="my-3"
                     >
                       Registrar turno medico
@@ -855,12 +872,8 @@ function AgendaTurnos() {
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={registrarTurno}>
-                    Confirmar
-                  </Button>
-                  <Button onClick={confirmSave}>
-                    Cancelar
-                  </Button>
+                  <Button onClick={registrarTurno}>Confirmar</Button>
+                  <Button onClick={confirmSave}>Cancelar</Button>
                 </DialogActions>
               </DialogTitle>
             </Dialog>
